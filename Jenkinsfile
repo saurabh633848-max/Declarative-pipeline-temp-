@@ -10,7 +10,10 @@ pipeline {
             steps {
                 sh '''
                   echo "Deleting temp files older than 5 minutes from /var/tmp..."
-                  find /var/tmp -type f -mmin +5 -delete
+                  # Exclude systemd-private directories to avoid permission errors
+                  find /var/tmp \
+                    -path "/var/tmp/systemd-private-*" -prune -o \
+                    -type f -mmin +5 -delete
                 '''
             }
         }
